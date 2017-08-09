@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Book Listing App</string>
+    <string name="search_lable">Search</string>
+    <string name="hint">Type a keyword here...</string>
+    <string name="offline_message">No Internet Connection</string>
+    <string name="empty_message">No results for this keyword</string>
+</resources>
