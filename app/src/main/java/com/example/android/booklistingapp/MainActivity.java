@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private ListView listView = null;
     private TextView messageTextView;
+    private BookAdaptor adaptor;
+    private ArrayList<Book> booksArrayList;
 
     private boolean isOnline() {
         ConnectivityManager cm =
@@ -69,8 +71,15 @@ public class MainActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.VISIBLE);
                     EditText keyWord = (EditText) findViewById(R.id.editText);
 
+                    if (adaptor != null)
+                        adaptor.clear();
+
+                    if (booksArrayList != null)
+                        booksArrayList.clear();
+
                     BookAsyncTask asyncTask = new BookAsyncTask();
                     asyncTask.execute(keyWord.getText().toString());
+
 
                 } else {
                     Log.e(LOG_TAG, "Not online");
@@ -139,13 +148,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            ArrayList<Book> booksArrayList = extractBooksFromJson(jsonResponse);
+            booksArrayList = extractBooksFromJson(jsonResponse);
 
             return booksArrayList;
         }
 
         private ArrayList<Book> extractBooksFromJson(String jsonResponse) {
-            ArrayList<Book> booksArrayList = new ArrayList<>();
+            booksArrayList = new ArrayList<>();
             try {
                 JSONObject jsonObject = new JSONObject(jsonResponse);
                 JSONArray items = jsonObject.getJSONArray("items");
@@ -181,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 BookAdaptor adaptor = new BookAdaptor(MainActivity.this, books);
                 listView.setAdapter(adaptor);
+
 
             }
             progressBar.setVisibility(View.GONE);
