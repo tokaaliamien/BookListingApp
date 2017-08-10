@@ -157,21 +157,38 @@ public class MainActivity extends AppCompatActivity {
             booksArrayList = new ArrayList<>();
             try {
                 JSONObject jsonObject = new JSONObject(jsonResponse);
-                JSONArray items = jsonObject.getJSONArray("items");
+                if (jsonObject.has("items")) {
+                    JSONArray items = jsonObject.getJSONArray("items");
 
-                for (int i = 0; i < items.length(); i++) {
-                    JSONObject temp = items.getJSONObject(i);
-                    JSONObject volumeInfo = temp.getJSONObject("volumeInfo");
-                    String title = volumeInfo.getString("title");
+                    for (int i = 0; i < items.length(); i++) {
+                        JSONObject temp = items.getJSONObject(i);
+                        if (temp.has("volumeInfo")) {
+                            JSONObject volumeInfo = temp.getJSONObject("volumeInfo");
+                            String title = "";
+                            if (volumeInfo.has("title")) {
+                                title = volumeInfo.getString("title");
+                            } else {
+                                Log.e(LOG_TAG, "Book has no title");
+                            }
 
-                    JSONArray authors = volumeInfo.getJSONArray("authors");
-                    String auther = "";
-                    for (int j = 0; j < authors.length(); j++) {
-                        auther += authors.getString(j);
+                            String auther = "";
+                            if (volumeInfo.has("authors")) {
+                                JSONArray authors = volumeInfo.getJSONArray("authors");
+                                for (int j = 0; j < authors.length(); j++) {
+                                    auther += authors.getString(j);
+                                }
+                            } else {
+                                Log.e(LOG_TAG, "Book has no authers");
+                            }
+
+                            booksArrayList.add(new Book(title, auther));
+
+                        } else {
+                            Log.e(LOG_TAG, "No volume info found");
+                        }
                     }
-
-                    booksArrayList.add(new Book(title, auther));
-
+                } else {
+                    Log.e(LOG_TAG, "No items found");
                 }
 
             } catch (JSONException e) {
